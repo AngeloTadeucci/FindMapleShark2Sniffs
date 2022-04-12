@@ -45,6 +45,13 @@ public partial class MainForm : Form
             MessageBox.Show("Select at least one filter!", "Error");
             return;
         }
+
+        if (backgroundWorker1.IsBusy)
+        {
+            MessageBox.Show("Still searching...", "Error");
+            return;
+        }
+
         label2.Text = "Searching...";
 
         progressBar1.Maximum = Files.Length;
