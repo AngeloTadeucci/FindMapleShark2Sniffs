@@ -1,6 +1,6 @@
 ﻿// From Ochi's MapleShark2 https://github.com/kOchirasu/MapleShark2
 
-namespace FindMapleShark2Sniffs.Tools;
+namespace FindMapleShark2Sniffs.MapleShark2_Files;
 
 public class MsbMetadata
 {
@@ -14,9 +14,6 @@ public class MsbMetadata
 
 public static class FileLoader
 {
-    private const ushort LEGACY_VERSION = 0x2027;
-    private const ushort VERSION = 0x2030;
-
     public static (MsbMetadata, IEnumerable<MaplePacket>) ReadMsbFile(string fileName)
     {
         MsbMetadata metadata = new();

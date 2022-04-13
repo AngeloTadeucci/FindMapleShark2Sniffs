@@ -2,7 +2,7 @@
 
 using Maple2.PacketLib.Tools;
 
-namespace FindMapleShark2Sniffs.Tools;
+namespace FindMapleShark2Sniffs.MapleShark2_Files;
 
 public class MaplePacket
 {

@@ -1,6 +1,6 @@
 ﻿// From Ochi's MapleShark2 https://github.com/kOchirasu/MapleShark2
 
-namespace FindMapleShark2Sniffs.Tools;
+namespace FindMapleShark2Sniffs.MapleShark2_Files;
 
 public static class MapleLocale
 {
