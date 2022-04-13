@@ -27,8 +27,8 @@ public class MaplePacket
         Version = version;
         Locale = MapleLocale.Unknown;
         Opcode = opcode;
-        this.Buffer = buffer;
-        Reader = new(this.Buffer.Array, this.Buffer.Offset);
+        Buffer = buffer;
+        Reader = new(Buffer.Array, Buffer.Offset);
     }
 
     public void Reset() => Reader.Skip(-Reader.Position + Buffer.Offset);
@@ -69,6 +69,8 @@ public class MaplePacket
     }
 
     public T Read<T>() where T : struct => Reader.Read<T>();
+
+    public byte ReadByte() => Reader.ReadByte();
     public byte[] Read(int count) => Reader.ReadBytes(count);
     public void Skip(int count) => Reader.Skip(count);
 

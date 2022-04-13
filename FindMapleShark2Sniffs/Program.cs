@@ -1,4 +1,4 @@
-namespace FindMapleShark2Sniffs;
+﻿namespace FindMapleShark2Sniffs;
 
 internal static class Program
 {
