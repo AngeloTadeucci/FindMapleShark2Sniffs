@@ -33,8 +33,8 @@
             this.filtersGroupBox = new System.Windows.Forms.GroupBox();
             this.packetGroupBox = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.lenghtInput = new System.Windows.Forms.NumericUpDown();
-            this.lenghtCheckBox = new System.Windows.Forms.CheckBox();
+            this.lengthInput = new System.Windows.Forms.NumericUpDown();
+            this.lengthCheckBox = new System.Windows.Forms.CheckBox();
             this.modeInput = new System.Windows.Forms.NumericUpDown();
             this.modeCheckBox = new System.Windows.Forms.CheckBox();
             this.gmsCheckBox = new System.Windows.Forms.CheckBox();
@@ -50,7 +50,7 @@
             this.modeToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.filtersGroupBox.SuspendLayout();
             this.packetGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lenghtInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lengthInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.modeInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.opcodeInput)).BeginInit();
             this.SuspendLayout();
@@ -80,8 +80,8 @@
             // packetGroupBox
             // 
             this.packetGroupBox.Controls.Add(this.label4);
-            this.packetGroupBox.Controls.Add(this.lenghtInput);
-            this.packetGroupBox.Controls.Add(this.lenghtCheckBox);
+            this.packetGroupBox.Controls.Add(this.lengthInput);
+            this.packetGroupBox.Controls.Add(this.lengthCheckBox);
             this.packetGroupBox.Controls.Add(this.modeInput);
             this.packetGroupBox.Controls.Add(this.modeCheckBox);
             this.packetGroupBox.Controls.Add(this.gmsCheckBox);
@@ -106,25 +106,25 @@
             // 
             // lenghtInput
             // 
-            this.lenghtInput.Location = new System.Drawing.Point(105, 76);
-            this.lenghtInput.Maximum = new decimal(new int[] {
+            this.lengthInput.Location = new System.Drawing.Point(105, 76);
+            this.lengthInput.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
-            this.lenghtInput.Name = "lenghtInput";
-            this.lenghtInput.Size = new System.Drawing.Size(120, 23);
-            this.lenghtInput.TabIndex = 12;
+            this.lengthInput.Name = "lenghtInput";
+            this.lengthInput.Size = new System.Drawing.Size(120, 23);
+            this.lengthInput.TabIndex = 12;
             // 
             // lenghtCheckBox
             // 
-            this.lenghtCheckBox.AutoSize = true;
-            this.lenghtCheckBox.Location = new System.Drawing.Point(6, 80);
-            this.lenghtCheckBox.Name = "lenghtCheckBox";
-            this.lenghtCheckBox.Size = new System.Drawing.Size(82, 19);
-            this.lenghtCheckBox.TabIndex = 11;
-            this.lenghtCheckBox.Text = "Lenght >=";
-            this.lenghtCheckBox.UseVisualStyleBackColor = true;
+            this.lengthCheckBox.AutoSize = true;
+            this.lengthCheckBox.Location = new System.Drawing.Point(6, 80);
+            this.lengthCheckBox.Name = "lenghtCheckBox";
+            this.lengthCheckBox.Size = new System.Drawing.Size(82, 19);
+            this.lengthCheckBox.TabIndex = 11;
+            this.lengthCheckBox.Text = "Length >=";
+            this.lengthCheckBox.UseVisualStyleBackColor = true;
             // 
             // modeInput
             // 
@@ -270,7 +270,7 @@
             this.filtersGroupBox.PerformLayout();
             this.packetGroupBox.ResumeLayout(false);
             this.packetGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lenghtInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lengthInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.modeInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.opcodeInput)).EndInit();
             this.ResumeLayout(false);
@@ -293,8 +293,8 @@
         private System.ComponentModel.BackgroundWorker SearchBackgroundWorker;
         private ProgressBar progressBar;
         private GroupBox packetGroupBox;
-        private NumericUpDown lenghtInput;
-        private CheckBox lenghtCheckBox;
+        private NumericUpDown lengthInput;
+        private CheckBox lengthCheckBox;
         private NumericUpDown modeInput;
         private CheckBox modeCheckBox;
         private ToolTip modeToolTip;

@@ -112,31 +112,34 @@ public partial class MainForm : Form
         {
             backgroundWorker!.ReportProgress(i++);
             (MsbMetadata metadata, IEnumerable<MaplePacket> packets) = FileLoader.ReadMsbFile(filePath);
+            IEnumerable<MaplePacket> packetsList = packets.ToList();
 
-            if (opCodeCheckBox.Checked)
+            if (!opCodeCheckBox.Checked)
             {
-                if (!FilterHelpers.FilterOpCode(packets, opcodeInput.Value, OutRadioButton.Checked))
-                {
-                    continue;
-                }
-
-                if (modeCheckBox.Checked && !FilterHelpers.FilterMode(packets, opcodeInput.Value, modeInput.Value))
-                {
-                    continue;
-                }
-
-                if (lenghtCheckBox.Checked && !FilterHelpers.FilterLenght(packets, opcodeInput.Value, lenghtInput.Value))
-                {
-                    continue;
-                }
-
-                if (gmsCheckBox.Checked && metadata.Build != 12)
-                {
-                    continue;
-                }
-
-                MatchedFiles.Add(filePath);
+                continue;
             }
+
+            if (!FilterHelpers.FilterOpCode(packetsList, opcodeInput.Value, OutRadioButton.Checked))
+            {
+                continue;
+            }
+
+            if (modeCheckBox.Checked && !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value))
+            {
+                continue;
+            }
+
+            if (lengthCheckBox.Checked && !FilterHelpers.FilterLength(packetsList, opcodeInput.Value, lengthInput.Value))
+            {
+                continue;
+            }
+
+            if (gmsCheckBox.Checked && metadata.Build != 12)
+            {
+                continue;
+            }
+
+            MatchedFiles.Add(filePath);
         }
     }
 
