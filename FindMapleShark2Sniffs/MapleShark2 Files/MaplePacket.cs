@@ -12,49 +12,46 @@ public class MaplePacket
     public byte Locale { get; }
     public ushort Opcode { get; }
 
-    private readonly ArraySegment<byte> buffer;
-    private readonly ByteReader reader;
+    private readonly ArraySegment<byte> Buffer;
+    private readonly ByteReader Reader;
 
-    public int Position => reader.Position - buffer.Offset;
-    public int Offset => buffer.Offset;
-    public int Length => buffer.Count;
-    public int Available => reader.Available;
+    public int Position => Reader.Position - Buffer.Offset;
+    public int Offset => Buffer.Offset;
+    public int Length => Buffer.Count;
+    public int Available => Reader.Available;
 
     internal MaplePacket(DateTime timestamp, bool outbound, uint version, ushort opcode, ArraySegment<byte> buffer)
     {
         Timestamp = timestamp;
         Outbound = outbound;
         Version = version;
-        Locale = MapleLocale.UNKNOWN;
+        Locale = MapleLocale.Unknown;
         Opcode = opcode;
-        this.buffer = buffer;
-        reader = new ByteReader(this.buffer.Array, this.buffer.Offset);
+        this.Buffer = buffer;
+        Reader = new(this.Buffer.Array, this.Buffer.Offset);
     }
 
-    public void Reset()
-    {
-        reader.Skip(-reader.Position + buffer.Offset);
-    }
+    public void Reset() => Reader.Skip(-Reader.Position + Buffer.Offset);
 
     public long Search(byte[] pattern, long start = 0)
     {
-        if (pattern == null || buffer.Array == null || start < 0)
+        if (pattern == null || Buffer.Array == null || start < 0)
         {
             return -1;
         }
 
-        long startIndex = buffer.Offset + start;
-        for (long i = startIndex; i <= buffer.Array.Length - pattern.Length; i++)
+        long startIndex = Buffer.Offset + start;
+        for (long i = startIndex; i <= Buffer.Array.Length - pattern.Length; i++)
         {
             bool match = true;
             for (int j = 0; match && j < pattern.Length; j++)
             {
-                match = buffer.Array[i + j] == pattern[j];
+                match = Buffer.Array[i + j] == pattern[j];
             }
 
             if (match)
             {
-                return i - buffer.Offset;
+                return i - Buffer.Offset;
             }
         }
 
@@ -63,23 +60,23 @@ public class MaplePacket
 
     public ArraySegment<byte> GetReadSegment(int length)
     {
-        return new ArraySegment<byte>(reader.Buffer, reader.Position, length);
+        return new(Reader.Buffer, Reader.Position, length);
     }
 
     public ArraySegment<byte> GetSegment(int offset, int length)
     {
-        return new ArraySegment<byte>(reader.Buffer, offset, length);
+        return new(Reader.Buffer, offset, length);
     }
 
-    public T Read<T>() where T : struct => reader.Read<T>();
-    public byte[] Read(int count) => reader.ReadBytes(count);
-    public void Skip(int count) => reader.Skip(count);
+    public T Read<T>() where T : struct => Reader.Read<T>();
+    public byte[] Read(int count) => Reader.ReadBytes(count);
+    public void Skip(int count) => Reader.Skip(count);
 
     private unsafe string ToHexString()
     {
-        fixed (byte* bytesPtr = buffer.AsSpan())
+        fixed (byte* bytesPtr = Buffer.AsSpan())
         {
-            return HexEncoding.ToHexString(bytesPtr, buffer.Count, ' ');
+            return HexEncoding.ToHexString(bytesPtr, Buffer.Count, ' ');
         }
     }
 

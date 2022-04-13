@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.selectedPathTextBox = new System.Windows.Forms.TextBox();
+            this.filesFoundLabel = new System.Windows.Forms.Label();
             this.filtersGroupBox = new System.Windows.Forms.GroupBox();
             this.OutRadioButton = new System.Windows.Forms.RadioButton();
             this.InRadioButton = new System.Windows.Forms.RadioButton();
@@ -41,9 +41,9 @@
             this.resultListBox = new System.Windows.Forms.ListBox();
             this.button2 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label2 = new System.Windows.Forms.Label();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.statusLabel = new System.Windows.Forms.Label();
+            this.SearchBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.filtersGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.opcodeInput)).BeginInit();
             this.SuspendLayout();
@@ -60,21 +60,21 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(93, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(346, 23);
-            this.textBox1.TabIndex = 1;
+            this.selectedPathTextBox.Location = new System.Drawing.Point(93, 12);
+            this.selectedPathTextBox.Name = "selectedPathTextBox";
+            this.selectedPathTextBox.ReadOnly = true;
+            this.selectedPathTextBox.Size = new System.Drawing.Size(346, 23);
+            this.selectedPathTextBox.TabIndex = 1;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(445, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 15);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Found x .msb files";
-            this.label1.Visible = false;
+            this.filesFoundLabel.AutoSize = true;
+            this.filesFoundLabel.Location = new System.Drawing.Point(445, 16);
+            this.filesFoundLabel.Name = "filesFoundLabel";
+            this.filesFoundLabel.Size = new System.Drawing.Size(103, 15);
+            this.filesFoundLabel.TabIndex = 2;
+            this.filesFoundLabel.Text = "Found x .msb files";
+            this.filesFoundLabel.Visible = false;
             // 
             // filtersGroupBox
             // 
@@ -168,39 +168,39 @@
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(93, 127);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 15);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "label2";
-            this.label2.Visible = false;
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(93, 127);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(38, 15);
+            this.statusLabel.TabIndex = 6;
+            this.statusLabel.Text = "label2";
+            this.statusLabel.Visible = false;
             // 
             // backgroundWorker1
             // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_Finish);
+            this.SearchBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.SearchBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_ProgressChanged);
+            this.SearchBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_Finish);
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(445, 123);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(100, 23);
-            this.progressBar1.TabIndex = 7;
+            this.progressBar.Location = new System.Drawing.Point(445, 123);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(100, 23);
+            this.progressBar.TabIndex = 7;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(560, 363);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.resultListBox);
             this.Controls.Add(this.filtersGroupBox);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.filesFoundLabel);
+            this.Controls.Add(this.selectedPathTextBox);
             this.Controls.Add(this.button1);
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -217,8 +217,8 @@
         #endregion
 
         private Button button1;
-        private TextBox textBox1;
-        private Label label1;
+        private TextBox selectedPathTextBox;
+        private Label filesFoundLabel;
         private GroupBox filtersGroupBox;
         private CheckBox gmsCheckBox;
         private CheckBox opCodeCheckBox;
@@ -226,11 +226,11 @@
         private Button button2;
         private NumericUpDown opcodeInput;
         private ToolTip toolTip1;
-        private Label label2;
+        private Label statusLabel;
         private RadioButton checkBox1;
         private RadioButton InRadioButton;
         private RadioButton OutRadioButton;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
-        private ProgressBar progressBar1;
+        private System.ComponentModel.BackgroundWorker SearchBackgroundWorker;
+        private ProgressBar progressBar;
     }
 }

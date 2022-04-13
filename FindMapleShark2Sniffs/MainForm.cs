@@ -1,13 +1,13 @@
-using System.Diagnostics;
 using System.ComponentModel;
+using System.Diagnostics;
 using FindMapleShark2Sniffs.Tools;
 
 namespace FindMapleShark2Sniffs;
 
 public partial class MainForm : Form
 {
-    private string[] Files;
-    private List<string> matchedFiles = new List<string>();
+    private string[]? Files;
+    private List<string> MatchedFiles = new();
 
     public MainForm()
     {
@@ -24,12 +24,12 @@ public partial class MainForm : Form
             return;
         }
 
-        textBox1.Text = dialog.SelectedPath;
+        selectedPathTextBox.Text = dialog.SelectedPath;
 
         Files = Directory.GetFiles(dialog.SelectedPath, "*.msb", SearchOption.AllDirectories);
 
-        label1.Text = $"Found {Files.Length} .msb files";
-        label1.Visible = true;
+        filesFoundLabel.Text = $"Found {Files.Length} .msb files";
+        filesFoundLabel.Visible = true;
     }
 
     private void FindFilesClick(object sender, EventArgs e)
@@ -46,70 +46,68 @@ public partial class MainForm : Form
             return;
         }
 
-        if (backgroundWorker1.IsBusy)
+        if (SearchBackgroundWorker.IsBusy)
         {
             MessageBox.Show("Still searching...", "Error");
             return;
         }
 
-        label2.Text = "Searching...";
+        statusLabel.Text = "Searching...";
 
-        progressBar1.Maximum = Files.Length;
-        progressBar1.Step = 1;
-        progressBar1.Value = 0;
+        progressBar.Maximum = Files.Length;
+        progressBar.Step = 1;
+        progressBar.Value = 0;
 
-        backgroundWorker1.WorkerReportsProgress = true;
-        backgroundWorker1.RunWorkerAsync();
+        SearchBackgroundWorker.WorkerReportsProgress = true;
+        SearchBackgroundWorker.RunWorkerAsync();
     }
 
     private void ResultListBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-        var mouseEventArgs = e as MouseEventArgs;
-        int index = resultListBox.IndexFromPoint(mouseEventArgs.Location);
-        if (index != ListBox.NoMatches)
+        if (e is not MouseEventArgs mouseEventArgs)
         {
-            new Process
-            {
-                StartInfo = new ProcessStartInfo(@resultListBox.Items[index].ToString())
-                {
-                    UseShellExecute = true
-                }
-            }.Start();
+            return;
         }
+
+        int index = resultListBox.IndexFromPoint(mouseEventArgs.Location);
+        if (index == ListBox.NoMatches)
+        {
+            return;
+        }
+
+        new Process
+        {
+            StartInfo = new(resultListBox.Items[index].ToString()!)
+            {
+                UseShellExecute = true
+            }
+        }.Start();
     }
 
-    private void InRadioButton_CheckedChanged(object sender, EventArgs e)
-    {
-        OutRadioButton.Checked = !InRadioButton.Checked;
-    }
+    private void InRadioButton_CheckedChanged(object sender, EventArgs e) => OutRadioButton.Checked = !InRadioButton.Checked;
 
-    private void OutRadioButton_CheckedChanged(object sender, EventArgs e)
-    {
-        InRadioButton.Checked = !OutRadioButton.Checked;
-    }
+    private void OutRadioButton_CheckedChanged(object sender, EventArgs e) => InRadioButton.Checked = !OutRadioButton.Checked;
 
-    private void backgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
-    {
-        progressBar1.Value = e.ProgressPercentage;
-    }
+    private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) => progressBar.Value = e.ProgressPercentage;
 
-    private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+    private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
     {
-        matchedFiles = new();
+        if (Files is null)
+        {
+            return;
+        }
 
-        var backgroundWorker = sender as BackgroundWorker;
+        MatchedFiles = new();
+
+        BackgroundWorker? backgroundWorker = sender as BackgroundWorker;
 
         int i = 0;
-        foreach (string? filePath in Files)
+        foreach (string filePath in Files)
         {
-            backgroundWorker.ReportProgress(i++);
+            backgroundWorker!.ReportProgress(i++);
             bool opCodeMatched = false;
             bool gmsMatched = false;
             (MsbMetadata metadata, IEnumerable<MaplePacket> packets) = FileLoader.ReadMsbFile(filePath);
-            if (metadata is null)
-            {
-                return;
-            }
 
             if (opCodeCheckBox.Checked)
             {
@@ -128,27 +126,27 @@ public partial class MainForm : Form
             {
                 if (gmsCheckBox.Checked && gmsMatched)
                 {
-                    matchedFiles.Add(filePath);
+                    MatchedFiles.Add(filePath);
                 }
                 else
                 {
-                    matchedFiles.Add(filePath);
+                    MatchedFiles.Add(filePath);
                 }
             }
             else if (!opCodeCheckBox.Checked && gmsCheckBox.Checked && gmsMatched)
             {
-                matchedFiles.Add(filePath);
+                MatchedFiles.Add(filePath);
             }
         }
     }
 
     private void backgroundWorker_Finish(object sender, RunWorkerCompletedEventArgs e)
     {
-        label2.Text = $"Found {matchedFiles.Count} files.";
-        label2.Visible = true;
+        statusLabel.Text = $"Found {MatchedFiles.Count} files.";
+        statusLabel.Visible = true;
 
         resultListBox.Items.Clear();
-        foreach (var item in matchedFiles)
+        foreach (string item in MatchedFiles)
         {
             resultListBox.Items.Add(item);
         }
