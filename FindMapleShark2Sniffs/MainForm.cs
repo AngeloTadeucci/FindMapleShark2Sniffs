@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using FindMapleShark2Sniffs.MapleShark2_Files;
 
@@ -12,6 +12,7 @@ public partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
+        modeToolTip.SetToolTip(modeCheckBox, "Read the first byte of the packet and compares with the set value.");
     }
 
     private void FindFolderClick(object sender, EventArgs e)
@@ -24,12 +25,10 @@ public partial class MainForm : Form
             return;
         }
 
-        selectedPathTextBox.Text = dialog.SelectedPath;
-
         Files = Directory.GetFiles(dialog.SelectedPath, "*.msb", SearchOption.AllDirectories);
 
-        filesFoundLabel.Text = $"Found {Files.Length} .msb files";
-        filesFoundLabel.Visible = true;
+        statusLabel.Text = $"Found {Files.Length} .msb files";
+        statusLabel.Visible = true;
     }
 
     private void FindFilesClick(object sender, EventArgs e)
@@ -40,9 +39,15 @@ public partial class MainForm : Form
             return;
         }
 
-        if (!opCodeCheckBox.Checked && !gmsCheckBox.Checked)
+        if (!opCodeCheckBox.Checked)
         {
             MessageBox.Show("Select at least one filter!", "Error");
+            return;
+        }
+
+        if (opcodeInput.Value == 0)
+        {
+            MessageBox.Show("OpCode was zero. No packets will be found.", "Error");
             return;
         }
 
@@ -53,6 +58,7 @@ public partial class MainForm : Form
         }
 
         statusLabel.Text = "Searching...";
+        progressBar.Visible = true;
 
         progressBar.Maximum = Files.Length;
         progressBar.Step = 1;
@@ -105,36 +111,30 @@ public partial class MainForm : Form
         foreach (string filePath in Files)
         {
             backgroundWorker!.ReportProgress(i++);
-            bool opCodeMatched = false;
-            bool gmsMatched = false;
             (MsbMetadata metadata, IEnumerable<MaplePacket> packets) = FileLoader.ReadMsbFile(filePath);
 
             if (opCodeCheckBox.Checked)
             {
-                if (packets.Any(x => x.Opcode == opcodeInput.Value && x.Outbound == OutRadioButton.Checked))
+                if (!FilterHelpers.FilterOpCode(packets, opcodeInput.Value, OutRadioButton.Checked))
                 {
-                    opCodeMatched = true;
+                    continue;
                 }
-            }
 
-            if (gmsCheckBox.Checked && metadata.Build == 12)
-            {
-                gmsMatched = true;
-            }
+                if (modeCheckBox.Checked && !FilterHelpers.FilterMode(packets, opcodeInput.Value, modeInput.Value))
+                {
+                    continue;
+                }
 
-            if (opCodeCheckBox.Checked && opCodeMatched)
-            {
-                if (gmsCheckBox.Checked && gmsMatched)
+                if (lenghtCheckBox.Checked && !FilterHelpers.FilterLenght(packets, opcodeInput.Value, lenghtInput.Value))
                 {
-                    MatchedFiles.Add(filePath);
+                    continue;
                 }
-                else
+
+                if (gmsCheckBox.Checked && metadata.Build != 12)
                 {
-                    MatchedFiles.Add(filePath);
+                    continue;
                 }
-            }
-            else if (!opCodeCheckBox.Checked && gmsCheckBox.Checked && gmsMatched)
-            {
+
                 MatchedFiles.Add(filePath);
             }
         }
@@ -144,11 +144,17 @@ public partial class MainForm : Form
     {
         statusLabel.Text = $"Found {MatchedFiles.Count} files.";
         statusLabel.Visible = true;
+        progressBar.Visible = false;
 
         resultListBox.Items.Clear();
         foreach (string item in MatchedFiles)
         {
             resultListBox.Items.Add(item);
         }
+    }
+
+    private void opCodeCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+        packetGroupBox.Enabled = !packetGroupBox.Enabled;
     }
 }
