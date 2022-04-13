@@ -18,7 +18,10 @@ public partial class MainForm : Form
     private void FindFolderClick(object sender, EventArgs e)
     {
         FolderBrowserDialog dialog = new();
-        dialog.ShowDialog();
+        if (dialog.ShowDialog() == DialogResult.Cancel)
+        {
+            return;
+        }
 
         if (string.IsNullOrEmpty(dialog.SelectedPath))
         {
@@ -124,12 +127,20 @@ public partial class MainForm : Form
                 continue;
             }
 
-            if (modeCheckBox.Checked && !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value))
+            if (modeCheckBox.Checked && lengthCheckBox.Checked &&
+                !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value, lengthInput.Value))
             {
                 continue;
             }
 
-            if (lengthCheckBox.Checked && !FilterHelpers.FilterLength(packetsList, opcodeInput.Value, lengthInput.Value))
+            if (modeCheckBox.Checked && !lengthCheckBox.Checked && 
+                !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value))
+            {
+                continue;
+            }
+
+            if (!modeCheckBox.Checked && lengthCheckBox.Checked && 
+                !FilterHelpers.FilterLength(packetsList, opcodeInput.Value, lengthInput.Value))
             {
                 continue;
             }

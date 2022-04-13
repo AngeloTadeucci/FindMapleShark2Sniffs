@@ -9,7 +9,7 @@ public static class FilterHelpers
         return packets.Any(packet => packet.Opcode == opCodeValue && packet.Outbound == outBound);
     }
 
-    public static bool FilterMode(IEnumerable<MaplePacket> packets, decimal opCodeValue, decimal modeValue)
+    public static bool FilterMode(IEnumerable<MaplePacket> packets, decimal opCodeValue, decimal modeValue, decimal length = 0)
     {
         foreach (MaplePacket packet in packets.Where(x => x.Opcode == opCodeValue))
         {
@@ -23,7 +23,7 @@ public static class FilterHelpers
                 continue;
             }
 
-            if (mode == modeValue)
+            if (mode == modeValue && packet.Length >= length)
             {
                 return true;
             }
@@ -32,8 +32,8 @@ public static class FilterHelpers
         return false;
     }
 
-    public static bool FilterLength(IEnumerable<MaplePacket> packets, decimal opCodeValue, decimal lenght)
+    public static bool FilterLength(IEnumerable<MaplePacket> packets, decimal opCodeValue, decimal length)
     {
-        return packets.Where(x => x.Opcode == opCodeValue).Any(packet => packet.Length >= lenght);
+        return packets.Where(x => x.Opcode == opCodeValue).Any(packet => packet.Length >= length);
     }
 }
