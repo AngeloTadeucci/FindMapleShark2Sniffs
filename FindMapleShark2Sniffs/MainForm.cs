@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using FindMapleShark2Sniffs.MapleShark2_Files;
+using Maple2.PacketLib.Tools;
 
 namespace FindMapleShark2Sniffs;
 
@@ -42,15 +43,21 @@ public partial class MainForm : Form
             return;
         }
 
-        if (!opCodeCheckBox.Checked)
+        if (opCodeCheckBox.Checked && opcodeInput.Value == 0)
         {
-            MessageBox.Show("Select at least one filter!", "Error");
+            MessageBox.Show("OpCode was zero. No packets will be found.", "Error");
             return;
         }
 
-        if (opcodeInput.Value == 0)
+        if (searchIdCheckBox.Checked && searchId.Value == 0)
         {
-            MessageBox.Show("OpCode was zero. No packets will be found.", "Error");
+            MessageBox.Show("Search id was zero. No packets will be found.", "Error");
+            return;
+        }
+
+        if (!opCodeCheckBox.Checked && !searchIdCheckBox.Checked)
+        {
+            MessageBox.Show("Select at least one filter!", "Error");
             return;
         }
 
@@ -117,6 +124,22 @@ public partial class MainForm : Form
             (MsbMetadata metadata, IEnumerable<MaplePacket> packets) = FileLoader.ReadMsbFile(filePath);
             IEnumerable<MaplePacket> packetsList = packets.ToList();
 
+            if (searchIdCheckBox.Checked)
+            {
+                // this is ugly but im dumb and idk an easier way to do it :)), thank god only me uses this app and this doesn't matter
+                PacketWriter pw = new();
+                pw.WriteInt((int) searchId.Value);
+
+                byte[] idBytes = pw.Buffer.Take(4).ToArray();
+
+                if (FilterHelpers.SearchBytes(packetsList, idBytes))
+                {
+                    MatchedFiles.Add(filePath);
+                }
+
+                continue;
+            }
+
             if (!opCodeCheckBox.Checked)
             {
                 continue;
@@ -128,18 +151,18 @@ public partial class MainForm : Form
             }
 
             if (modeCheckBox.Checked && lengthCheckBox.Checked &&
-                !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value, lengthInput.Value))
+                !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value, OutRadioButton.Checked, lengthInput.Value))
             {
                 continue;
             }
 
-            if (modeCheckBox.Checked && !lengthCheckBox.Checked && 
-                !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value))
+            if (modeCheckBox.Checked && !lengthCheckBox.Checked &&
+                !FilterHelpers.FilterMode(packetsList, opcodeInput.Value, modeInput.Value, OutRadioButton.Checked))
             {
                 continue;
             }
 
-            if (!modeCheckBox.Checked && lengthCheckBox.Checked && 
+            if (!modeCheckBox.Checked && lengthCheckBox.Checked &&
                 !FilterHelpers.FilterLength(packetsList, opcodeInput.Value, lengthInput.Value))
             {
                 continue;
@@ -167,8 +190,32 @@ public partial class MainForm : Form
         }
     }
 
+    private void onItemIdValueChange(object sender, EventArgs e)
+    {
+        MapleShark2_Files.PacketWriter pw = new();
+        pw.WriteInt((int) searchId.Value);
+
+        byte[] idBytes = pw.Buffer.Take(4).ToArray();
+
+        hexIdTextBox.Text = idBytes.ToHexString(' ');
+    }
+
+    private void searchIdCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+        if (opCodeCheckBox.Checked && searchIdCheckBox.Checked)
+        {
+            opCodeCheckBox.Checked = false;
+            packetGroupBox.Enabled = false;
+        }
+    }
+
     private void opCodeCheckBox_CheckedChanged(object sender, EventArgs e)
     {
-        packetGroupBox.Enabled = !packetGroupBox.Enabled;
+        if (searchIdCheckBox.Checked && opCodeCheckBox.Checked)
+        {
+            searchIdCheckBox.Checked = false;
+        }
+
+        packetGroupBox.Enabled = opCodeCheckBox.Checked;
     }
 }

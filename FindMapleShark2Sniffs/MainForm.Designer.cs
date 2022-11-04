@@ -48,11 +48,16 @@
             this.SearchBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.modeToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.searchIdCheckBox = new System.Windows.Forms.CheckBox();
+            this.searchId = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.hexIdTextBox = new System.Windows.Forms.TextBox();
             this.filtersGroupBox.SuspendLayout();
             this.packetGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lengthInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.modeInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.opcodeInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.searchId)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -104,7 +109,7 @@
             this.label4.TabIndex = 12;
             this.label4.Text = "label4";
             // 
-            // lenghtInput
+            // lengthInput
             // 
             this.lengthInput.Location = new System.Drawing.Point(105, 76);
             this.lengthInput.Maximum = new decimal(new int[] {
@@ -112,15 +117,15 @@
             0,
             0,
             0});
-            this.lengthInput.Name = "lenghtInput";
+            this.lengthInput.Name = "lengthInput";
             this.lengthInput.Size = new System.Drawing.Size(120, 23);
             this.lengthInput.TabIndex = 12;
             // 
-            // lenghtCheckBox
+            // lengthCheckBox
             // 
             this.lengthCheckBox.AutoSize = true;
             this.lengthCheckBox.Location = new System.Drawing.Point(6, 80);
-            this.lengthCheckBox.Name = "lenghtCheckBox";
+            this.lengthCheckBox.Name = "lengthCheckBox";
             this.lengthCheckBox.Size = new System.Drawing.Size(82, 19);
             this.lengthCheckBox.TabIndex = 11;
             this.lengthCheckBox.Text = "Length >=";
@@ -218,7 +223,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 210);
+            this.button2.Location = new System.Drawing.Point(12, 362);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 5;
@@ -244,11 +249,52 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(155, 210);
+            this.progressBar.Location = new System.Drawing.Point(155, 362);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(100, 23);
             this.progressBar.TabIndex = 7;
             this.progressBar.Visible = false;
+            // 
+            // searchIdCheckBox
+            // 
+            this.searchIdCheckBox.AutoSize = true;
+            this.searchIdCheckBox.Location = new System.Drawing.Point(12, 210);
+            this.searchIdCheckBox.Name = "searchIdCheckBox";
+            this.searchIdCheckBox.Size = new System.Drawing.Size(74, 19);
+            this.searchIdCheckBox.TabIndex = 10;
+            this.searchIdCheckBox.Text = "Search id";
+            this.searchIdCheckBox.UseVisualStyleBackColor = true;
+            this.searchIdCheckBox.CheckedChanged += new System.EventHandler(this.searchIdCheckBox_CheckedChanged);
+            // 
+            // searchId
+            // 
+            this.searchId.Location = new System.Drawing.Point(92, 209);
+            this.searchId.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.searchId.Name = "searchId";
+            this.searchId.Size = new System.Drawing.Size(120, 23);
+            this.searchId.TabIndex = 10;
+            this.searchId.ValueChanged += new System.EventHandler(this.onItemIdValueChange);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 241);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 15);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "ID in HEX:";
+            // 
+            // hexIdTextBox
+            // 
+            this.hexIdTextBox.Location = new System.Drawing.Point(92, 238);
+            this.hexIdTextBox.Name = "hexIdTextBox";
+            this.hexIdTextBox.ReadOnly = true;
+            this.hexIdTextBox.Size = new System.Drawing.Size(120, 23);
+            this.hexIdTextBox.TabIndex = 12;
             // 
             // MainForm
             // 
@@ -256,6 +302,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(774, 397);
+            this.Controls.Add(this.hexIdTextBox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.searchId);
+            this.Controls.Add(this.searchIdCheckBox);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.button2);
@@ -273,6 +323,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.lengthInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.modeInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.opcodeInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.searchId)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -299,5 +350,9 @@
         private CheckBox modeCheckBox;
         private ToolTip modeToolTip;
         private Label label4;
+        private CheckBox searchIdCheckBox;
+        private NumericUpDown searchId;
+        private Label label1;
+        private TextBox hexIdTextBox;
     }
 }
