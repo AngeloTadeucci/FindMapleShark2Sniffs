@@ -55,7 +55,13 @@ public partial class MainForm : Form
             return;
         }
 
-        if (!opCodeCheckBox.Checked && !searchIdCheckBox.Checked)
+        if (searchTextCheckbox.Checked && string.IsNullOrEmpty(searchTextInput.Text))
+        {
+            MessageBox.Show("Search text is empty. No packets will be found.", "Error");
+            return;
+        }
+
+        if (!opCodeCheckBox.Checked && !searchIdCheckBox.Checked && !searchTextCheckbox.Checked)
         {
             MessageBox.Show("Select at least one filter!", "Error");
             return;
@@ -123,6 +129,19 @@ public partial class MainForm : Form
             backgroundWorker!.ReportProgress(i++);
             (MsbMetadata metadata, IEnumerable<MaplePacket> packets) = FileLoader.ReadMsbFile(filePath);
             IEnumerable<MaplePacket> packetsList = packets.ToList();
+
+            if (searchTextCheckbox.Checked && !string.IsNullOrEmpty(searchTextInput.Text))
+            {
+                PacketWriter pw = new();
+                pw.WriteUnicodeString(searchTextInput.Text);
+                byte[] textBytes = pw.Buffer.Skip(2).Take(pw.Length).ToArray();
+
+                if (FilterHelpers.SearchBytes(packetsList, textBytes))
+                {
+                    MatchedFiles.Add(filePath);
+                }
+                continue;
+            }
 
             if (searchIdCheckBox.Checked)
             {

@@ -35,23 +35,20 @@ public class MaplePacket
 
     public long Search(byte[] pattern, long start = 0)
     {
-        if (pattern == null || Buffer.Array == null || start < 0)
+        if(Buffer.Array == null || start < 0 || pattern.Length == 0)
         {
             return -1;
         }
 
-        long startIndex = Buffer.Offset + start;
-        for (long i = startIndex; i <= Buffer.Array.Length - pattern.Length; i++)
-        {
-            bool match = true;
-            for (int j = 0; match && j < pattern.Length; j++)
-            {
-                match = Buffer.Array[i + j] == pattern[j];
-            }
+        // Only search within the packet's buffer, not the whole array
+        Span<byte> span = Buffer.AsSpan();
+        Span<byte> patternSpan = pattern.AsSpan();
 
-            if (match)
+        for (int i = (int)start; i <= span.Length - patternSpan.Length; i++)
+        {
+            if (span.Slice(i, patternSpan.Length).SequenceEqual(patternSpan))
             {
-                return i - Buffer.Offset;
+                return i;
             }
         }
 
