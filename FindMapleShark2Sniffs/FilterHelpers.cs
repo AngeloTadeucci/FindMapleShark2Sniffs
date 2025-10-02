@@ -41,4 +41,10 @@ public static class FilterHelpers
     {
         return packets.Any(x => x.Search(bytes) > -1);
     }
+
+    // Overload with opcode filtering
+    public static bool SearchBytes(IEnumerable<MaplePacket> packets, byte[] bytes, decimal opcodeValue)
+    {
+        return packets.Where(p => p.Opcode == opcodeValue).Any(p => p.Search(bytes) > -1);
+    }
 }

@@ -112,6 +112,18 @@ public partial class MainForm : Form
 
     private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) => progressBar.Value = e.ProgressPercentage;
 
+    // Helper to build UTF-16LE (Maple style) string bytes with or without the ushort length prefix
+    private static (byte[] fullWithLength, byte[] withoutLength) BuildUnicodeSearchBytes(string value)
+    {
+        PacketWriter pw = new();
+        pw.WriteUnicodeString(value);
+        byte[] full = pw.ToArray();              // [len(ushort)] + UTF-16LE chars
+        byte[] noLen = full.Length >= 2 ? full.AsSpan(2).ToArray() : Array.Empty<byte>();
+        return (full, noLen);
+    }
+
+    private static string ToHex(byte[] data) => data.ToHexString(' ');
+
     private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
     {
         if (Files is null)
@@ -129,17 +141,29 @@ public partial class MainForm : Form
             backgroundWorker!.ReportProgress(i++);
             (MsbMetadata metadata, IEnumerable<MaplePacket> packets) = FileLoader.ReadMsbFile(filePath);
             IEnumerable<MaplePacket> packetsList = packets.ToList();
-
+          
             if (searchTextCheckbox.Checked && !string.IsNullOrEmpty(searchTextInput.Text))
             {
-                PacketWriter pw = new();
-                pw.WriteUnicodeString(searchTextInput.Text);
-                byte[] textBytes = pw.Buffer.Skip(2).Take(pw.Length).ToArray();
+                // Build both variants
+                (byte[] fullWithLen, byte[] noLen) = BuildUnicodeSearchBytes(searchTextInput.Text);
 
-                if (FilterHelpers.SearchBytes(packetsList, textBytes))
+                bool matched = false;
+
+                // Try searching packets with the full representation first
+                if (FilterHelpers.SearchBytes(packetsList, fullWithLen))
+                {
+                    matched = true;
+                }
+                else if (FilterHelpers.SearchBytes(packetsList, noLen))
+                {
+                    matched = true;
+                }
+
+                if (matched)
                 {
                     MatchedFiles.Add(filePath);
                 }
+
                 continue;
             }
 

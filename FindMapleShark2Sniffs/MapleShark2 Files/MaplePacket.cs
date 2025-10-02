@@ -68,6 +68,12 @@ public class MaplePacket
     public T Read<T>() where T : struct => Reader.Read<T>();
 
     public byte ReadByte() => Reader.ReadByte();
+    public bool ReadBool() => Reader.ReadBool();
+    public short ReadShort() => Reader.ReadShort();
+    public int ReadInt() => Reader.ReadInt();
+    public float ReadFloat() => Reader.ReadFloat();
+    public long ReadLong() => Reader.ReadLong();
+    public string ReadUnicodeString() => Reader.ReadUnicodeString();
     public byte[] Read(int count) => Reader.ReadBytes(count);
     public void Skip(int count) => Reader.Skip(count);
 
